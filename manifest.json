@@ -1,0 +1,12 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "voluble-cobbler-a7470a.netlify",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "voluble-cobbler-a7470a.netlify",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "description": "A simple tool that helps musicians find harmony notes instantly by selecting a starting note."
+}
