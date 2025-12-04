@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Harmony Helper – 8 Notes</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 24px auto;
+      padding: 0 16px 32px;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+    p {
+      margin-top: 0.25rem;
+      margin-bottom: 1rem;
+    }
+    .inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .note-block {
+      flex: 1 1 45%; /* two per row on wide screens, stack on narrow */
+      min-width: 140px;
+    }
+    label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    select {
+      width: 100%;
+      padding: 4px;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 4px;
+      padding: 6px 12px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.95rem;
+    }
+    .card h2 {
+      font-size: 1rem;
+      margin: 0 0 6px 0;
+    }
+    .card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Harmony Helper – 8 Notes</h1>
+  <p>Pick up to 8 notes. I’ll show harmony notes for each one.</p>
+
+  <div class="inputs">
+    <div class="note-block">
+      <label for="note1">Note 1</label>
+      <select id="note1" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note2">Note 2</label>
+      <select id="note2" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note3">Note 3</label>
+      <select id="note3" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note4">Note 4</label>
+      <select id="note4" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note5">Note 5</label>
+      <select id="note5" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note6">Note 6</label>
+      <select id="note6" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note7">Note 7</label>
+      <select id="note7" class="noteSelect"></select>
+    </div>
+    <div class="note-block">
+      <label for="note8">Note 8</label>
+      <select id="note8" class="noteSelect"></select>
+    </div>
+  </div>
+
+  <button onclick="showAllHarmony()">Show harmony notes</button>
+
+  <div id="output"></div>
+
+  <script>
+    // Note names in one octave
+    const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+    // Build a list of notes from C3 (48) to C6 (84) using MIDI numbers
+    const notes = [];
+    for (let midi = 48; midi <= 84; midi++) {
+      notes.push({ midi, name: midiToName(midi) });
+    }
+
+    // Fill all dropdowns
+    const selects = document.querySelectorAll(".noteSelect");
+    selects.forEach(sel => {
+      notes.forEach(n => {
+        const opt = document.createElement("option");
+        opt.value = n.midi;
+        opt.textContent = n.name;
+        sel.appendChild(opt);
+      });
+    });
+
+    // Convert MIDI number to note name like "A4"
+    function midiToName(midi) {
+      const noteIndex = midi % 12;
+      const octave = Math.floor(midi / 12) - 1;
+      return NOTE_NAMES[noteIndex] + octave;
+    }
+
+    // Offsets in semitones for harmony notes
+    const HARMONY_OFFSETS = [
+      -12,  // octave down
+      -5,   // fourth down
+      -3,   // small step down
+      +3,   // small step up
+      +4,   // slightly bigger up
+      +7,   // fifth up
+      +12,  // octave up
+      +16   // octave + a bit
+    ];
+
+    function getHarmonyForMidi(rootMidi) {
+      const rootName = midiToName(rootMidi);
+      const results = [];
+
+      HARMONY_OFFSETS.forEach(offset => {
+        const m = rootMidi + offset;
+        if (m >= 36 && m <= 96) {
+          results.push(midiToName(m));
+        }
+      });
+
+      return { rootName, results };
+    }
+
+    function showAllHarmony() {
+      const out = document.getElementById("output");
+      out.innerHTML = "";
+
+      selects.forEach((sel, index) => {
+        const rootMidi = parseInt(sel.value, 10);
+        const { rootName, results } = getHarmonyForMidi(rootMidi);
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const title = document.createElement("h2");
+        title.textContent = `Note ${index + 1}: ${rootName}`;
+        card.appendChild(title);
+
+        const list = document.createElement("ul");
+        results.forEach(noteName => {
+          const li = document.createElement("li");
+          li.textContent = noteName;
+          list.appendChild(li);
+        });
+        card.appendChild(list);
+
+        out.appendChild(card);
+      });
+    }
+
+    // Show initial harmony when page first loads
+    showAllHarmony();
+  </script>
+</body>
+</html>
