@@ -1,12 +1,24 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
+  "name": "Harmony Helper – 8 Notes",
+  "short_name": "Harmony Helper",
+  "start_url": "/harmonyhelper/",
+  "scope": "/harmonyhelper/",
   "display": "standalone",
-  "name": "voluble-cobbler-a7470a.netlify",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "voluble-cobbler-a7470a.netlify",
-  "start_url": "/",
+
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+
+  "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "description": "A simple tool that helps musicians find harmony notes instantly by selecting a starting note."
 }
